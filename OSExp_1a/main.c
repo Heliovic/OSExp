@@ -37,6 +37,7 @@ int main(int argc, char **argv)
     close(pipe_fd[0]);
     close(pipe_fd[1]);
 
+    // 等待 4 个子进程全部结束放出四个结束信号后父进程才退出
     int i, pid, status;
     for (i = 0; i < 4; i++)
         pid = wait(&status);
