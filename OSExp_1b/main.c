@@ -9,8 +9,8 @@
 #include "string.h"
 #include "unistd.h"
 
-int producer(void* args);
-int consumer(void* args);
+int producer(int args);
+int consumer(int args);
 pthread_mutex_t mutex;  // 互斥锁
 sem_t product;          // 产品信号量
 sem_t warehouse;        // 缓冲区信号量
@@ -29,19 +29,19 @@ int main(int argc, char** argv)
     int i;
     for (i = 0; i < 2; i++)
     {
-        arg = i;
+        // arg = i;
         stack = (char*)malloc(4096);
-        retval = clone((void*)producer, &(stack[4095]), clone_flag, (void*)&arg);
+        retval = clone((void*)producer, &(stack[4095]), clone_flag, i);
         stack = (char*)malloc(4096);
-        retval = clone((void*)consumer, &(stack[4095]), clone_flag, (void*)&arg);
-        // sleep(1);
+        retval = clone((void*)consumer, &(stack[4095]), clone_flag, i);
+        sleep(0.5);
     }
     exit(1);
 }
 
-int producer(void* args)
+int producer(int args)
 {
-    int id = *((int*) args);
+    int id = args;
     int i;
     for (i = 0; i < 10; i++)
     {
@@ -60,9 +60,9 @@ int producer(void* args)
     printf("producer %d is over!\n", id);
 }
 
-int consumer(void* args)
+int consumer(int args)
 {
-    int id = *((int*) args);
+    int id = args;
     int i;
     for (i = 0; i < 10; i++)
     {
